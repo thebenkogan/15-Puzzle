@@ -36,8 +36,3 @@ class Board:
             return True
         else:
             return False
-
-
-bd = Board()
-bd.move((3, 0))
-print(bd)
