@@ -18,13 +18,13 @@ class Board:
             out += "\n" if i != 0 else ""
         return out
 
-    # Returns a list of numbers surrounding the hole
+    # Returns a list of coordinates surrounding the hole
     def __hole_squares(self):
-        potential = [(self.hole[0], self.hole[1] + 1)]
-        potential.append((self.hole[0], self.hole[1] - 1))
-        potential.append((self.hole[0] + 1, self.hole[1]))
-        potential.append((self.hole[0] - 1, self.hole[1]))
-        return list(filter(isValidSquare, potential))
+        out = [(self.hole[0], self.hole[1] + 1)]
+        out.append((self.hole[0], self.hole[1] - 1))
+        out.append((self.hole[0] + 1, self.hole[1]))
+        out.append((self.hole[0] - 1, self.hole[1]))
+        return list(filter(is_valid_square, out))
 
     # Moves the number at 'pos' to the hole and returns True
     # if legal, False otherwise
@@ -33,6 +33,7 @@ class Board:
             num = self.board[pos[0]][pos[1]]
             self.board[self.hole[0]][self.hole[1]] = num
             self.board[pos[0]][pos[1]] = 0
+            self.hole = pos
             return True
         else:
             return False
