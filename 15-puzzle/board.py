@@ -3,7 +3,7 @@ from helper import *
 
 class Board:
 
-    # Current board, initialized in solved state
+    # Current board in column major 2D list, initialized in solved state
     board = [[i, i - 4, i - 8, i - 12] for i in range(13, 16)] + [[0, 12, 8, 4]]
 
     # Current position of the hole
@@ -37,3 +37,11 @@ class Board:
             return True
         else:
             return False
+
+    # Finds the coordinate of 'num' in the board, None if is not on the board
+    def find_num(self, num):
+        for i, col in enumerate(self.board):
+            for j, el in enumerate(self.board[i]):
+                if el == num:
+                    return (i, j)
+        return None
