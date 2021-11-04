@@ -7,6 +7,10 @@ while True:
     num = input()
     if num == "q":
         exit()
+    if num == "s":
+        bd.shuffle()
+        print(bd)
+        continue
     try:
         num = int(num)
     except:

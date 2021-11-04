@@ -1,4 +1,5 @@
 from helper import *
+import random
 
 
 class Board:
@@ -45,3 +46,12 @@ class Board:
                 if el == num:
                     return (i, j)
         return None
+
+    # Shuffles the board into a random orientation
+    def shuffle(self):
+        nums = [i for i in range(0, 16)]
+        random.shuffle(nums)
+        for i in range(0, 16):
+            self.board[int(i / 4)][i % 4] = nums[i]
+            if nums[i] == 0:
+                self.hole = (int(i / 4), i % 4)
