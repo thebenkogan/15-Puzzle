@@ -47,8 +47,8 @@ class Board:
                     return (i, j)
         return None
 
-    # Shuffles the board into a random orientation by making 5,000 moves
-    # with no repeats (moving the same number back and forth)
+    # Shuffles the board into a random orientation by making 5,000 random
+    # moves with no repeats (moving the same number back and forth)
     def shuffle(self):
         count = 0
         prev = self.hole
