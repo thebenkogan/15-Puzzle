@@ -40,7 +40,7 @@ class Board:
 
     # Finds the coordinate of 'num' in the board, None if is not on the board
     def find_num(self, num):
-        for i, col in enumerate(self.board):
+        for i, _ in enumerate(self.board):
             for j, el in enumerate(self.board[i]):
                 if el == num:
                     return (i, j)

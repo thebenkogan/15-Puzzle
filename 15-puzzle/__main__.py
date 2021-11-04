@@ -15,7 +15,6 @@ while True:
     coord = bd.find_num(num)
     if coord == None:
         print("Number not on board, try again.")
-        continue
     else:
         if bd.move(coord):
             print(bd)
