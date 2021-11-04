@@ -47,11 +47,16 @@ class Board:
                     return (i, j)
         return None
 
-    # Shuffles the board into a random orientation
+    # Shuffles the board into a random orientation by making 5,000 moves
+    # with no repeats (moving the same number back and forth)
     def shuffle(self):
-        nums = [i for i in range(0, 16)]
-        random.shuffle(nums)
-        for i in range(0, 16):
-            self.board[int(i / 4)][i % 4] = nums[i]
-            if nums[i] == 0:
-                self.hole = (int(i / 4), i % 4)
+        count = 0
+        prev = self.hole
+        next = random.choice(self.__hole_squares())
+        while count < 5000:
+            self.move(next)
+            next_nums = self.__hole_squares()
+            next_nums.remove(prev)
+            next = random.choice(next_nums)
+            prev = self.hole
+            count += 1
