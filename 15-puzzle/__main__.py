@@ -1,26 +1,17 @@
 import board
+import solver
+import time
 
 bd = board.Board()
-print(bd)
+bd.shuffle()
 
 while True:
-    num = input()
-    if num == "q":
+    moves = solver.next_moves(bd)
+    if len(moves) == 0:
+        print("Could not find path")
         exit()
-    if num == "s":
-        bd.shuffle()
+    for move in moves:
+        bd.move(move)
+        print("")
         print(bd)
-        continue
-    try:
-        num = int(num)
-    except:
-        print("Try again.")
-        continue
-    coord = bd.find_num(num)
-    if coord == None:
-        print("Number not on board, try again.")
-    else:
-        if bd.move(coord):
-            print(bd)
-        else:
-            print("Illegal move.")
+        time.sleep(0.1)
