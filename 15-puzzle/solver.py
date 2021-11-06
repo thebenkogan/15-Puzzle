@@ -1,6 +1,6 @@
 import board
 
-depth = 20
+depth = 50
 order = {
     0: 1,
     1: 5,
@@ -19,69 +19,53 @@ order = {
     14: 15,
     15: 16,
 }
-counter = 0
 
 
 def next_moves(bd):
-    global counter
     num_insert = next_insertion(bd)
     if num_insert == 16:
         return []
-    next_nums = bd.hole_squares()
-    best_path = [0] * (depth + 2)
-    for pos in next_nums:
-        stale = 1 if bd.board[pos[0]][pos[1]] != num_insert else 0
-        opt = bd.copy()
-        opt.move(pos)
-        path = eval_insert(
-            opt, bd.hole, pos, depth, num_insert, board.solved_pos(num_insert), stale
-        )
-        print(pos)
-        print(counter)
-        counter = 0
-        if path == None:
-            continue
-        if len(path) < len(best_path):
-            best_path = path
-    if len(best_path) > depth + 1:
+    path = eval_insert(bd, None, None, depth, num_insert)
+    if path == None:
         return []
-    return best_path
+    return path
 
 
-def eval_insert(bd, prev, start, depth, num, num_pos, stale):
-    global counter
-    counter += 1
-    if stale == 6:
+def eval_insert(bd, prev, start, depth, num):
+    if bd.stale == 7:
         return None
     if next_insertion(bd) > num:
         return [start]
     if depth == 0:
         return None
     next_nums = bd.hole_squares()
-    next_nums.remove(prev)
+    if prev != None:
+        next_nums.remove(prev)
 
     i = 0
     while i < len(next_nums):
-        if not makes_progress(bd, next_nums[i], num, num_pos):
+        if not makes_progress(bd, next_nums[i], num):
             next_nums.remove(next_nums[i])
         i += 1
 
-    best_path = None
+    boards = []
     for pos in next_nums:
-        if bd.board[pos[0]][pos[1]] != num:
-            stale += 1
-        else:
-            stale = 0
         next = bd.copy()
         next.move(pos)
-        path = eval_insert(next, bd.hole, pos, depth - 1, num, num_pos, stale)
-        if path != None and best_path == None:
-            path.insert(0, start)
-            best_path = path
-            break
-        if path != None and len(path) < len(best_path):
-            path.insert(0, start)
-            best_path = path
+        if bd.board[pos[0]][pos[1]] != num:
+            next.stale = bd.stale + 1
+        else:
+            next.stale = 0
+        boards.append(next)
+    boards.sort(key=closeness)
+
+    best_path = None
+    for opt in boards:
+        path = eval_insert(opt, bd.hole, opt.hole, depth - 1, num)
+        if path != None:
+            if start != None:
+                path.insert(0, start)
+            return path
     return best_path
 
 
@@ -101,21 +85,24 @@ def next_insertion(bd):
 # position. A number does not make progress to its position if it
 # moves away from the target. If the number does not move, then it
 # is considered as making progress.
-def makes_progress(bd, pos, num, target):
+def makes_progress(bd, pos, num):
     if bd.board[pos[0]][pos[1]] != num:
         return True
+    target = board.solved_dict[num]
     old_diff = abs(target[0] - pos[0]) + abs(target[1] - pos[1])
     new_diff = abs(target[0] - bd.hole[0]) + abs(target[1] - bd.hole[1])
     return new_diff < old_diff
 
 
-# Measures the exactness of the board by checking how many numbers
-# are in the correct position with respect to the solved state. Returns
-# a number in [0, 1], with 1 corresponding to the solved state.
-def exactness(bd):
-    count = 0
+# Measures the closeness of the board by checking how close every
+# number is to its solved position using the Manhattan distance. A
+# low value corresponds to a close-to-solved orientation.
+def closeness(bd):
+    total = 0
     for i in range(len(bd.board)):
-        for j, el in enumerate(bd.board[i]):
-            if el == board.solved[i][j]:
-                count += 0.0625
-    return count
+        for j, num in enumerate(bd.board[i]):
+            if num != 0:
+                target = board.solved_dict[num]
+                dist = abs(target[0] - i) + abs(target[1] - j)
+                total += dist
+    return total
