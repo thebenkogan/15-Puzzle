@@ -1,6 +1,24 @@
 import board
 
 depth = 20
+order = {
+    0: 1,
+    1: 5,
+    2: 2,
+    3: 6,
+    4: 3,
+    5: 4,
+    6: 7,
+    7: 8,
+    8: 9,
+    9: 13,
+    10: 10,
+    11: 14,
+    12: 11,
+    13: 12,
+    14: 15,
+    15: 16,
+}
 counter = 0
 
 
@@ -61,9 +79,9 @@ def eval_insert(bd, prev, start, depth, num, num_pos, stale):
             path.insert(0, start)
             best_path = path
             break
-        # if path != None and len(path) < len(best_path):
-        #    path.insert(0, start)
-        #    best_path = path
+        if path != None and len(path) < len(best_path):
+            path.insert(0, start)
+            best_path = path
     return best_path
 
 
