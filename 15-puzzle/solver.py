@@ -21,24 +21,31 @@ order = {
     15: 14,
 }
 
-
-def next_moves(bd):
-    num_insert = next_insertion(bd)
-    if num_insert == 16:
-        return []
-    path = eval_insert(bd, None, None, depth, num_insert)
-    if path == None:
-        return []
+# Returns a path to the solved position from the current state of the board,
+# empty if no path found.
+def solve(bd):
+    bd = bd.copy()
+    path = []
+    while bd.board != board.solved:
+        num_insert = next_insertion(bd)
+        res = eval_insert(bd, None, None, depth, num_insert)
+        if res == None:
+            print(bd)
+            return []
+        else:
+            path += res
+            for mv in res:
+                bd.move(mv)
     return path
 
 
 def eval_insert(bd, prev, start, depth, num):
     if bd.stale == 7:
         return None
-    if bd.board == board.solved or order[next_insertion(bd)] > order[num]:
-        return [start]
     if depth == 0:
         return None
+    if bd.board == board.solved or order[next_insertion(bd)] > order[num]:
+        return [start]
     next_nums = bd.hole_squares()
     if prev != None:
         next_nums.remove(prev)
@@ -84,9 +91,6 @@ def next_insertion(bd):
     return next
 
 
-# FIX: Only allow the number to move backwards once. This causes too many
-# branches with forward and backward movement.
-
 # True if moving 'pos' to the hole progresses 'num' to its target
 # position. A number does not make progress to its position if it
 # moves away from the target. If the number does not move, then it
@@ -105,6 +109,8 @@ def makes_progress(bd, pos, num):
         return out
 
 
+# Evaluates a board based on closeness to solved position and number
+# of linear conflicts.
 def heuristic(bd):
     return closeness(bd) + linear_conflicts(bd)
 
