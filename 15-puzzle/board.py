@@ -12,6 +12,10 @@ class Board:
     # and reset when it does move.
     stale = 0
 
+    # Progress of the board, true if the last move of the target number made
+    # progress towards its target position.
+    progress = True
+
     def __init__(self, board=copy.deepcopy(solved), hole=(3, 0)):
         # Current board in column major 2D list, initialized to 'board'
         self.board = board

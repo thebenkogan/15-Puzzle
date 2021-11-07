@@ -1,23 +1,24 @@
 import board
 
-depth = 50
+depth = 25
+
+# The order of insertions specified by the keys, value is ascending
 order = {
-    0: 1,
-    1: 5,
-    2: 2,
-    3: 6,
+    1: 0,
+    2: 1,
+    3: 2,
     4: 3,
     5: 4,
-    6: 7,
-    7: 8,
-    8: 9,
-    9: 13,
+    6: 5,
+    7: 6,
+    8: 7,
+    9: 8,
+    13: 9,
     10: 10,
-    11: 14,
-    12: 11,
-    13: 12,
-    14: 15,
-    15: 16,
+    14: 11,
+    11: 12,
+    12: 13,
+    15: 14,
 }
 
 
@@ -34,7 +35,7 @@ def next_moves(bd):
 def eval_insert(bd, prev, start, depth, num):
     if bd.stale == 7:
         return None
-    if next_insertion(bd) > num:
+    if bd.board == board.solved or order[next_insertion(bd)] > order[num]:
         return [start]
     if depth == 0:
         return None
@@ -51,6 +52,7 @@ def eval_insert(bd, prev, start, depth, num):
     boards = []
     for pos in next_nums:
         next = bd.copy()
+        next.progress = bd.progress
         next.move(pos)
         if bd.board[pos[0]][pos[1]] != num:
             next.stale = bd.stale + 1
@@ -71,7 +73,7 @@ def eval_insert(bd, prev, start, depth, num):
 
 # Returns the next number in [1, 15] to insert on the board with lower
 # numbers already in their correct position. If solved, this is 16.
-def next_insertion(bd):
+def next_insertion_new(bd):
     count = 1
     for i in range(0, 16):
         if bd.board[i % 4][3 - int(i / 4)] == i + 1:
@@ -80,6 +82,22 @@ def next_insertion(bd):
             break
     return count
 
+
+# Returns the next number in [1, 15] to insert on the board with lower
+# numbers of 'order' already in their correct position. If solved, this
+# is 16.
+def next_insertion(bd):
+    next = 16
+    for num in order:
+        target = board.solved_dict[num]
+        if bd.board[target[0]][target[1]] != num:
+            next = num
+            break
+    return next
+
+
+# FIX: Only allow the number to move backwards once. This causes too many
+# branches with forward and backward movement.
 
 # True if moving 'pos' to the hole progresses 'num' to its target
 # position. A number does not make progress to its position if it
@@ -91,7 +109,12 @@ def makes_progress(bd, pos, num):
     target = board.solved_dict[num]
     old_diff = abs(target[0] - pos[0]) + abs(target[1] - pos[1])
     new_diff = abs(target[0] - bd.hole[0]) + abs(target[1] - bd.hole[1])
-    return new_diff < old_diff
+    if new_diff < old_diff:
+        return True
+    else:
+        out = bd.progress
+        bd.progress = False
+        return out
 
 
 # Measures the closeness of the board by checking how close every
