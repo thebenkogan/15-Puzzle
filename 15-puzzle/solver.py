@@ -59,7 +59,7 @@ def eval_insert(bd, prev, start, depth, num):
         else:
             next.stale = 0
         boards.append(next)
-    boards.sort(key=closeness)
+    boards.sort(key=heuristic)
 
     best_path = None
     for opt in boards:
@@ -105,6 +105,10 @@ def makes_progress(bd, pos, num):
         return out
 
 
+def heuristic(bd):
+    return closeness(bd) + linear_conflicts(bd)
+
+
 # Measures the closeness of the board by checking how close every
 # number is to its solved position using the Manhattan distance. A
 # low value corresponds to a close-to-solved orientation.
@@ -116,4 +120,20 @@ def closeness(bd):
                 target = board.solved_dict[num]
                 dist = abs(target[0] - i) + abs(target[1] - j)
                 total += dist
+    return total
+
+
+# Adds 2 for every linear conflict on the board. A linear conflict is
+# any 2 numbers in the same row with the same target row, but are in the
+# wrong order relative to the solved position.
+def linear_conflicts(bd):
+    total = 0
+    for i in range(4):
+        seen = []
+        for j in range(4):
+            if bd.board[j][i] != 0 and board.row_dict[bd.board[j][i]] == i:
+                for el in seen:
+                    if bd.board[j][i] < el:
+                        total += 2
+                seen.append(bd.board[j][i])
     return total
