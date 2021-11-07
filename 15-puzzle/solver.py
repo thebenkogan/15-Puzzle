@@ -72,18 +72,6 @@ def eval_insert(bd, prev, start, depth, num):
 
 
 # Returns the next number in [1, 15] to insert on the board with lower
-# numbers already in their correct position. If solved, this is 16.
-def next_insertion_new(bd):
-    count = 1
-    for i in range(0, 16):
-        if bd.board[i % 4][3 - int(i / 4)] == i + 1:
-            count += 1
-        else:
-            break
-    return count
-
-
-# Returns the next number in [1, 15] to insert on the board with lower
 # numbers of 'order' already in their correct position. If solved, this
 # is 16.
 def next_insertion(bd):
