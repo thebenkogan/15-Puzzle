@@ -1,12 +1,31 @@
 import board
+import solver
+import time
+from datetime import datetime
 
 bd = board.Board()
 print(bd)
 
 while True:
+    print("")
     num = input()
     if num == "q":
         exit()
+    if num == "s":
+        bd.shuffle()
+        print(bd)
+        continue
+    if num == "solve":
+        path = solver.solve(bd)
+        if len(path) == 0:
+            print("No path found.")
+        else:
+            for mv in path:
+                bd.move(mv)
+                print(bd)
+                print("")
+                time.sleep(0.7)
+        continue
     try:
         num = int(num)
     except:
