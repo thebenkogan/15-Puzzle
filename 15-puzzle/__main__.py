@@ -16,6 +16,9 @@ while True:
         print(bd)
         continue
     if num == "solve":
+        if bd.board == board.solved:
+            print("Already solved.")
+            continue
         path = solver.solve(bd)
         if len(path) == 0:
             print("No path found.")
@@ -23,7 +26,10 @@ while True:
             for mv in path:
                 bd.move(mv)
                 print(bd)
-                print("")
+                if bd.board == board.solved:
+                    print("Solved!")
+                else:
+                    print("")
                 time.sleep(0.7)
         continue
     try:
