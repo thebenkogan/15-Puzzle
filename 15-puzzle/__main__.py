@@ -1,18 +1,19 @@
 import board
 import solver
 import time
-from datetime import datetime
 
 bd = board.Board()
-bd.shuffle()
 print(bd)
-path = solver.new_solver(bd)
-print(len(path))
-for mv in path:
-    bd.move(mv)
-print(bd)
-
 while False:
+    bd.shuffle()
+    print(bd)
+    path = solver.new_solver(bd)
+    print(len(path))
+    for mv in path:
+        bd.move(mv)
+    print(bd)
+
+while True:
     print("")
     num = input()
     if num == "q":
@@ -33,7 +34,7 @@ while False:
                 bd.move(mv)
                 print(bd)
                 if bd.board == board.solved:
-                    print("Solved!")
+                    print("Solved in " + str(len(path)) + " moves!")
                 else:
                     print("")
                 time.sleep(0.7)
@@ -51,3 +52,9 @@ while False:
             print(bd)
         else:
             print("Illegal move.")
+
+bd = board.Board()
+for i in range(50):
+    bd.shuffle()
+    path = solver.new_solver(bd)
+    print(i)
