@@ -39,6 +39,9 @@ class Board:
             out += "\n" if i != 0 else ""
         return out
 
+    def __lt__(self, other):
+        return True    
+
     # Returns a list of coordinates surrounding the hole
     def hole_squares(self):
         out = [(self.hole[0], self.hole[1] + 1)]

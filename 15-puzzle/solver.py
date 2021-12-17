@@ -112,10 +112,9 @@ def solve2(bd):
             next.move(pos)
             next.path.append(pos)
             f = len(next.path) + closeness2(next, num)
-            frontier.append((f, next))
+            hq.heappush(frontier, (f, next))
 
-        frontier = sorted(frontier, reverse=True, key=func)
-        best = frontier.pop()
+        best = hq.heappop(frontier)
 
         if best[1].board == board.solved or order[next_insertion(best[1])] > order[num]:
             solved_path = best[1].path
