@@ -1,10 +1,17 @@
 import board
 import solver
 import time
-from datetime import datetime
 
 bd = board.Board()
 print(bd)
+while False:
+    bd.shuffle()
+    print(bd)
+    path = solver.new_solver(bd)
+    print(len(path))
+    for mv in path:
+        bd.move(mv)
+    print(bd)
 
 while True:
     print("")
@@ -16,6 +23,9 @@ while True:
         print(bd)
         continue
     if num == "solve":
+        if bd.board == board.solved:
+            print("Already solved.")
+            continue
         path = solver.solve(bd)
         if len(path) == 0:
             print("No path found.")
@@ -23,7 +33,10 @@ while True:
             for mv in path:
                 bd.move(mv)
                 print(bd)
-                print("")
+                if bd.board == board.solved:
+                    print("Solved in " + str(len(path)) + " moves!")
+                else:
+                    print("")
                 time.sleep(0.7)
         continue
     try:
@@ -39,3 +52,9 @@ while True:
             print(bd)
         else:
             print("Illegal move.")
+
+bd = board.Board()
+for i in range(50):
+    bd.shuffle()
+    path = solver.new_solver(bd)
+    print(i)

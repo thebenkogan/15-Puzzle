@@ -4,24 +4,23 @@ import copy
 
 
 # Solved board
-solved = [[i, i - 4, i - 8, i - 12] for i in range(13, 16)] + [[0, 12, 8, 4]]
+solved = [[13, 9, 5, 1], [14, 10, 6, 2], [15, 11, 7, 3], [0, 12, 8, 4]]
 
 
 class Board:
-    # Staleness of the board, incremented whenever a target number doesn't move
-    # and reset when it does move.
-    stale = 0
-
-    # Progress of the board, true if the last move of the target number made
-    # progress towards its target position.
-    progress = True
-
-    def __init__(self, board=copy.deepcopy(solved), hole=(3, 0)):
+    def __init__(self, board=copy.deepcopy(solved), hole=(3, 0), path=[], prev=None):
         # Current board in column major 2D list, initialized to 'board'
         self.board = board
 
         # Current position of the hole, represented as a 0
         self.hole = hole
+
+        # The path to this board from some other board, represented
+        # by numbers corresponding to the order of tiles moves.
+        self.path = path
+
+        # The coordinate of the last hole position.
+        self.prev = prev
 
     # String rep of board with newlines before each row
     def __str__(self):
@@ -31,6 +30,9 @@ class Board:
                 out += str(self.board[j][i]) + " "
             out += "\n" if i != 0 else ""
         return out
+
+    def __lt__(self, _):
+        return True
 
     # Returns a list of coordinates surrounding the hole
     def hole_squares(self):
@@ -79,43 +81,4 @@ class Board:
         out = []
         for col in self.board:
             out.append(list(col))
-        return Board(out, self.hole)
-
-
-# Maps number to solved position
-solved_dict = {
-    1: (0, 3),
-    2: (1, 3),
-    3: (2, 3),
-    4: (3, 3),
-    5: (0, 2),
-    6: (1, 2),
-    7: (2, 2),
-    8: (3, 2),
-    9: (0, 1),
-    10: (1, 1),
-    11: (2, 1),
-    12: (3, 1),
-    13: (0, 0),
-    14: (1, 0),
-    15: (2, 0),
-}
-
-# Maps number to solved row
-row_dict = {
-    1: 3,
-    2: 3,
-    3: 3,
-    4: 3,
-    5: 2,
-    6: 2,
-    7: 2,
-    8: 2,
-    9: 1,
-    10: 1,
-    11: 1,
-    12: 1,
-    13: 0,
-    14: 0,
-    15: 0,
-}
+        return Board(out, self.hole, list(self.path), self.prev)
