@@ -4,9 +4,15 @@ import time
 from datetime import datetime
 
 bd = board.Board()
+bd.shuffle()
+print(bd)
+path = solver.new_solver(bd)
+print(len(path))
+for mv in path:
+    bd.move(mv)
 print(bd)
 
-while True:
+while False:
     print("")
     num = input()
     if num == "q":

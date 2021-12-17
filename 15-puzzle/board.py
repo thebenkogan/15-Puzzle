@@ -16,12 +16,19 @@ class Board:
     # progress towards its target position.
     progress = True
 
-    def __init__(self, board=copy.deepcopy(solved), hole=(3, 0)):
+    def __init__(self, board=copy.deepcopy(solved), hole=(3, 0), path=[], prev=None):
         # Current board in column major 2D list, initialized to 'board'
         self.board = board
 
         # Current position of the hole, represented as a 0
         self.hole = hole
+
+        # The path to this board from some other board, represented
+        # by numbers corresponding to the order of tiles moves.
+        self.path = path
+
+        # The coordinate of the last hole position.
+        self.prev = prev
 
     # String rep of board with newlines before each row
     def __str__(self):
@@ -79,7 +86,7 @@ class Board:
         out = []
         for col in self.board:
             out.append(list(col))
-        return Board(out, self.hole)
+        return Board(out, self.hole, list(self.path), self.prev)
 
 
 # Maps number to solved position

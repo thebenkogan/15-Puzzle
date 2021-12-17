@@ -1,4 +1,5 @@
 import board
+import heapq as hq
 
 depth = 25
 
@@ -78,6 +79,52 @@ def eval_insert(bd, prev, start, depth, num):
     return best_path
 
 
+def new_solver(bd):
+    bd = bd.copy()
+    path = []
+    while bd.board != board.solved:
+        res = solve2(bd)
+        path += res
+        for mv in res:
+            bd.move(mv)
+    return path
+
+
+def func(x):
+    return x[0]
+
+
+def solve2(bd):
+    print("")
+    print(bd)
+    frontier = []
+    current = bd
+    solved_path = []
+    num = next_insertion(bd)
+
+    while len(solved_path) == 0:
+        next_nums = current.hole_squares()
+        if current.prev != None:
+            next_nums.remove(current.prev)
+        for pos in next_nums:
+            next = current.copy()
+            next.prev = next.hole
+            next.move(pos)
+            next.path.append(pos)
+            f = len(next.path) + closeness2(next, num)
+            frontier.append((f, next))
+
+        frontier = sorted(frontier, reverse=True, key=func)
+        best = frontier.pop()
+
+        if best[1].board == board.solved or order[next_insertion(best[1])] > order[num]:
+            solved_path = best[1].path
+
+        current = best[1]
+
+    return solved_path
+
+
 # Returns the next number in [1, 15] to insert on the board with lower
 # numbers of 'order' already in their correct position. If solved, this
 # is 16.
@@ -127,6 +174,17 @@ def closeness(bd):
                 dist = abs(target[0] - i) + abs(target[1] - j)
                 total += dist
     return total
+
+
+# Measures the closeness of the board by checking how close every
+# number is to its solved position using the Manhattan distance, with
+# favor towards 'num'.
+def closeness2(bd, num_insert):
+    for i in range(len(bd.board)):
+        for j, num in enumerate(bd.board[i]):
+            if num == num_insert:
+                target = board.solved_dict[num]
+                return abs(target[0] - i) + abs(target[1] - j)
 
 
 # Adds 2 for every linear conflict on the board. A linear conflict is
