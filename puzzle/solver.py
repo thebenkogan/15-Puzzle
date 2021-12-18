@@ -1,4 +1,4 @@
-import board
+from puzzle import board
 import heapq as hq
 
 # The order of insertions specified by the keys, value is ascending
