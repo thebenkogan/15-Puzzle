@@ -20,7 +20,7 @@ order = {
     15: 14,
 }
 
-
+# Returns a path specifying the list of input moves to solve 'bd'.
 def solve(bd):
     bd = bd.copy()
     path = []
@@ -32,6 +32,7 @@ def solve(bd):
     return path
 
 
+# Returns a path specifying the list of input moves to insert the number.
 def insert_next(bd):
     frontier = []
     current = bd

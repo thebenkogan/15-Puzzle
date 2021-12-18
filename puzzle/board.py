@@ -1,4 +1,3 @@
-from helper import *
 import random
 import copy
 
@@ -82,3 +81,7 @@ class Board:
         for col in self.board:
             out.append(list(col))
         return Board(out, self.hole, list(self.path), self.prev)
+
+
+def is_valid_square(pos):
+    return pos[0] >= 0 and pos[0] <= 3 and pos[1] >= 0 and pos[1] <= 3
