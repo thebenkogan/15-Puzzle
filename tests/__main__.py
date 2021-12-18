@@ -1,5 +1,2 @@
-import puzzle
-from puzzle import solver
 from puzzle import *
-
-board.Board()
+from puzzle.board import Board
