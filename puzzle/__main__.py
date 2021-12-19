@@ -9,6 +9,7 @@ import time
 
 bd = board.Board()
 print(bd)
+
 while False:
     bd.shuffle()
     print(bd)

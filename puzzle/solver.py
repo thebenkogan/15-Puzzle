@@ -1,25 +1,6 @@
 from puzzle import board
 import heapq as hq
 
-# The order of insertions specified by the keys, value is ascending
-order = {
-    1: 0,
-    2: 1,
-    3: 2,
-    4: 3,
-    5: 4,
-    6: 5,
-    7: 6,
-    8: 7,
-    9: 8,
-    13: 9,
-    10: 10,
-    14: 11,
-    11: 12,
-    12: 13,
-    15: 14,
-}
-
 # Returns a path specifying the list of input moves to solve 'bd'.
 def solve(bd):
     bd = bd.copy()
@@ -74,9 +55,7 @@ def next_insertion(bd):
     return next
 
 
-# Measures the closeness of the board by checking how close every
-# number is to its solved position using the Manhattan distance, with
-# favor towards 'num'.
+# Returns the Manhattan distance of 'num_insert' to its target position.
 def closeness(bd, num_insert):
     for i in range(len(bd.board)):
         for j, num in enumerate(bd.board[i]):
@@ -84,6 +63,25 @@ def closeness(bd, num_insert):
                 target = solved_dict[num]
                 return abs(target[0] - i) + abs(target[1] - j)
 
+
+# The order of insertions specified by the keys, value is ascending
+order = {
+    1: 0,
+    2: 1,
+    3: 2,
+    4: 3,
+    5: 4,
+    6: 5,
+    7: 6,
+    8: 7,
+    9: 8,
+    13: 9,
+    10: 10,
+    14: 11,
+    11: 12,
+    12: 13,
+    15: 14,
+}
 
 # Maps number to solved position
 solved_dict = {

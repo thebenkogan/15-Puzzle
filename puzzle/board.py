@@ -33,13 +33,17 @@ class Board:
     def __lt__(self, _):
         return True
 
+    ## True if 'pos' is a legal coordinate
+    def __is_valid_square(self, pos):
+        return pos[0] >= 0 and pos[0] <= 3 and pos[1] >= 0 and pos[1] <= 3
+
     # Returns a list of coordinates surrounding the hole
     def hole_squares(self):
         out = [(self.hole[0], self.hole[1] + 1)]
         out.append((self.hole[0], self.hole[1] - 1))
         out.append((self.hole[0] + 1, self.hole[1]))
         out.append((self.hole[0] - 1, self.hole[1]))
-        return list(filter(is_valid_square, out))
+        return list(filter(self.__is_valid_square, out))
 
     # Moves the number at 'pos' to the hole and returns True
     # if legal, False otherwise
@@ -81,7 +85,3 @@ class Board:
         for col in self.board:
             out.append(list(col))
         return Board(out, self.hole, list(self.path), self.prev)
-
-
-def is_valid_square(pos):
-    return pos[0] >= 0 and pos[0] <= 3 and pos[1] >= 0 and pos[1] <= 3
