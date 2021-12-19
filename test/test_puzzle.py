@@ -14,16 +14,16 @@ def test_board():
     assert bd.path == []
     assert bd.prev == None
 
-    holes = bd.hole_squares()
+    squares = bd.hole_squares()
     expected = [(3, 1), (2, 0)]
-    assert equal_sets(holes, expected)
+    assert equal_sets(squares, expected)
 
     assert bd.move((3, 1))
     assert bd.move((2, 1))
 
-    holes = bd.hole_squares()
+    squares = bd.hole_squares()
     expected = [(2, 2), (2, 0), (1, 1), (3, 1)]
-    assert equal_sets(holes, expected)
+    assert equal_sets(squares, expected)
 
     assert not bd.move((0, 3))
 
