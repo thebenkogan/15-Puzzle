@@ -32,7 +32,7 @@ while True:
         if bd.board == board.solved:
             print("Already solved.")
             continue
-        path = solver.solve_halves(bd)
+        path = solver.solve(bd)
         if len(path) == 0:
             print("No path found.")
         else:
@@ -60,7 +60,10 @@ while True:
             print("Illegal move.")
 
 bd = board.Board()
+results = []
 for i in range(50):
     bd.shuffle()
-    path = solver.new_solver(bd)
+    path = solver.solve_halves(bd)
+    results.append(len(path))
     print(i)
+print(sum(results) / len(results))
