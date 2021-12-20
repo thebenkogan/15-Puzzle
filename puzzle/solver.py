@@ -1,4 +1,5 @@
 from puzzle import board
+import datetime as dt
 import heapq as hq
 
 # Returns a path specifying the list of input moves to solve 'bd'.
@@ -70,6 +71,56 @@ def solve_full(bd):
     return solved_path
 
 
+def solve_halves(bd, half=True):
+    print(half)
+    frontier = []
+    current = bd
+    solved_path = []
+
+    if half:
+        bd = bd.copy()
+        path = []
+        while not half_solved(bd):
+            res = insert_next(bd)
+            path += res
+            for mv in res:
+                bd.move(mv)
+        return path + solve_halves(bd, half=False)
+
+    while len(solved_path) == 0:
+        next_nums = current.hole_squares()
+        if current.prev != None:
+            next_nums.remove(current.prev)
+        for pos in next_nums:
+            next = current.copy()
+            next.prev = next.hole
+            next.move(pos)
+            next.path.append(pos)
+            if half:
+                h = closeness_half(next) + linear_conflicts_half(next)
+            else:
+                h = closeness_all(next) + linear_conflicts(next)
+            f = len(next.path) + h
+            hq.heappush(frontier, (f, next))
+
+        best = hq.heappop(frontier)
+
+        if (half and half_solved(best[1])) or (
+            not half and best[1].board == board.solved
+        ):
+            solved_path = best[1].path
+
+        current = best[1]
+
+    if half:
+        next = bd.copy()
+        for move in solved_path:
+            next.move(move)
+        return solved_path + solve_halves(next, half=False)
+    else:
+        return solved_path
+
+
 # Returns the next number in [1, 15] to insert on the board with lower
 # numbers of 'order' already in their correct position. If solved, this
 # is 16.
@@ -106,6 +157,20 @@ def closeness_all(bd):
     return total
 
 
+# Measures the closeness of the board by checking how close every
+# number in the first half of the solved state is to its solved position
+# using the Manhattan distance.
+def closeness_half(bd):
+    total = 0
+    for i in range(len(bd.board)):
+        for j, num in enumerate(bd.board[i]):
+            if num != 0 and num < 5:
+                target = solved_dict[num]
+                dist = abs(target[0] - i) + abs(target[1] - j)
+                total += dist
+    return total
+
+
 # Adds 2 for every linear conflict on the board. A linear conflict is
 # any 2 numbers in the same row with the same target row, but are in the
 # wrong order relative to the solved position.
@@ -120,6 +185,31 @@ def linear_conflicts(bd):
                         total += 2
                 seen.append(bd.board[j][i])
     return total
+
+
+# Adds 2 for every linear conflict on the board. A linear conflict is
+# any 2 numbers in the same row with the same target row, but are in the
+# wrong order relative to the solved position.
+def linear_conflicts_half(bd):
+    total = 0
+    for i in range(3, 4):
+        seen = []
+        for j in range(4):
+            if bd.board[j][i] != 0 and row_dict[bd.board[j][i]] == i:
+                for el in seen:
+                    if bd.board[j][i] < el:
+                        total += 2
+                seen.append(bd.board[j][i])
+    return total
+
+
+# True if the first half of 'bd' is solved.
+def half_solved(bd):
+    for num in range(1, 5):
+        target = solved_dict[num]
+        if bd.board[target[0]][target[1]] != num:
+            return False
+    return True
 
 
 # The order of insertions specified by the keys, value is ascending
