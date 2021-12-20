@@ -32,7 +32,7 @@ while True:
         if bd.board == board.solved:
             print("Already solved.")
             continue
-        path = solver.solve(bd)
+        path = solver.solve_full(bd)
         if len(path) == 0:
             print("No path found.")
         else:
