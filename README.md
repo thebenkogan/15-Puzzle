@@ -2,4 +2,4 @@
 
 15 Puzzle REPL game with a solver!
 
-Use '''make run''' to play.
+Use `make run` to play.
