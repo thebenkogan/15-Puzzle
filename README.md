@@ -1,3 +1,5 @@
 # 15 Puzzle
 
-15 Puzzle game with a solver!
+15 Puzzle REPL game with a solver!
+
+Use '''make run''' to play.
