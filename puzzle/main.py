@@ -2,6 +2,13 @@ from . import board
 from . import solver
 import datetime as dt
 
+print("")
+print("Enter a valid number to make a move.")
+print("Enter 's' to scramble.")
+print("Enter 'solve' to find a solution.")
+print("Enter 'q' to exit. ")
+print("")
+
 bd = board.Board()
 print(bd)
 
