@@ -1,5 +1,12 @@
+.PHONY: puzzle test
+
 clean:
-		rm -rf 15-puzzle/__pycache__
+		rm -rf puzzle/__pycache__
+		rm -rf test/__pycache__
 
 run:
-		python 15-puzzle/
+		python -m puzzle.main
+
+test:
+		python -m pytest
+		rm -rf .pytest_cache	
