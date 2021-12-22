@@ -5,7 +5,7 @@ clean:
 		rm -rf test/__pycache__
 
 run:
-		python puzzle/
+		python -m puzzle.main
 
 test:
 		python -m pytest

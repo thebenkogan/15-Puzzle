@@ -1,4 +1,4 @@
-from puzzle import board
+from . import board
 import heapq as hq
 
 

@@ -1,10 +1,5 @@
-import os
-import sys
-
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-
-import board
-import solver
+from . import board
+from . import solver
 import time
 
 bd = board.Board()
