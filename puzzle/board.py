@@ -39,10 +39,11 @@ class Board:
 
     # Returns a list of coordinates surrounding the hole
     def hole_squares(self):
-        out = [(self.hole[0], self.hole[1] + 1)]
-        out.append((self.hole[0], self.hole[1] - 1))
-        out.append((self.hole[0] + 1, self.hole[1]))
-        out.append((self.hole[0] - 1, self.hole[1]))
+        out = [0] * 4
+        out[0] = (self.hole[0], self.hole[1] + 1)
+        out[1] = (self.hole[0], self.hole[1] - 1)
+        out[2] = (self.hole[0] + 1, self.hole[1])
+        out[3] = (self.hole[0] - 1, self.hole[1])
         return list(filter(self.__is_valid_square, out))
 
     # Moves the number at 'pos' to the hole and returns True
