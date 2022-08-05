@@ -2,16 +2,16 @@ from . import board
 import heapq as hq
 
 
-def solve(bd: board.Board, half: bool = True) -> list[board.Coord]:
-    if half:
+def solve(bd: board.Board, first_row: bool = True) -> list[board.Coord]:
+    if first_row:
         bd = bd.copy()
         path: list[board.Coord] = []
-        while not half_solved(bd):
+        while not first_row_solved(bd):
             res = search(bd, next_insertion(bd))
             path += res
             for mv in res:
                 bd.move(mv)
-        return path + solve(bd, half=False)
+        return path + solve(bd, first_row=False)
 
     return search(bd, None)
 
@@ -107,7 +107,7 @@ def linear_conflicts(bd: board.Board) -> int:
 
 
 # True if the first half of 'bd' is solved.
-def half_solved(bd: board.Board) -> bool:
+def first_row_solved(bd: board.Board) -> bool:
     for num in range(1, 5):
         target = solved_dict[num]
         if bd.board[target[0]][target[1]] != num:
