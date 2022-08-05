@@ -3,10 +3,10 @@ import heapq as hq
 
 
 # Returns a path specifying the list of input moves to insert the number.
-def insert_next(bd):
-    frontier = []
-    current = bd
-    solved_path = []
+def insert_next(bd: board.Board) -> list[board.Coord]:
+    frontier: list[tuple[int, board.Board]] = []
+    current: board.Board = bd
+    solved_path: list[board.Coord] = []
     num = next_insertion(bd)
 
     while len(solved_path) == 0:
@@ -18,7 +18,7 @@ def insert_next(bd):
             next.prev = next.hole
             next.move(pos)
             next.path.append(pos)
-            f = len(next.path) + closeness_one(next, num)
+            f: int = len(next.path) + closeness_one(next, num)
             hq.heappush(frontier, (f, next))
 
         best = hq.heappop(frontier)
@@ -31,14 +31,14 @@ def insert_next(bd):
     return solved_path
 
 
-def solve(bd, half=True):
-    frontier = []
-    current = bd
-    solved_path = []
+def solve(bd: board.Board, half: bool = True) -> list[board.Coord]:
+    frontier: list[tuple[int, board.Board]] = []
+    current: board.Board = bd
+    solved_path: list[board.Coord] = []
 
     if half:
         bd = bd.copy()
-        path = []
+        path: list[board.Coord] = []
         while not half_solved(bd):
             res = insert_next(bd)
             path += res
@@ -71,7 +71,7 @@ def solve(bd, half=True):
 # Returns the next number in [1, 15] to insert on the board with lower
 # numbers of 'order' already in their correct position. If solved, this
 # is 16.
-def next_insertion(bd):
+def next_insertion(bd: board.Board) -> int:
     next = 16
     for num in order:
         target = solved_dict[num]
@@ -82,18 +82,20 @@ def next_insertion(bd):
 
 
 # Returns the Manhattan distance of 'num_insert' to its target position.
-def closeness_one(bd, num_insert):
+# Requires 'num_insert' to be in the range [1, 15].
+def closeness_one(bd: board.Board, num_insert: int) -> int:
     for i in range(len(bd.board)):
         for j, num in enumerate(bd.board[i]):
             if num == num_insert:
                 target = solved_dict[num]
                 return abs(target[0] - i) + abs(target[1] - j)
+    raise ValueError("Number not on board.")
 
 
 # Measures the closeness of the board by checking how close every
 # number is to its solved position using the Manhattan distance. A
 # low value corresponds to a close-to-solved orientation.
-def closeness_all(bd):
+def closeness_all(bd: board.Board) -> int:
     total = 0
     for i in range(len(bd.board)):
         for j, num in enumerate(bd.board[i]):
@@ -107,10 +109,10 @@ def closeness_all(bd):
 # Adds 2 for every linear conflict on the board. A linear conflict is
 # any 2 numbers in the same row with the same target row, but are in the
 # wrong order relative to the solved position.
-def linear_conflicts(bd):
+def linear_conflicts(bd: board.Board) -> int:
     total = 0
     for i in range(4):
-        seen = []
+        seen: list[int] = []
         for j in range(4):
             if bd.board[j][i] != 0 and row_dict[bd.board[j][i]] == i:
                 for el in seen:
@@ -121,7 +123,7 @@ def linear_conflicts(bd):
 
 
 # True if the first half of 'bd' is solved.
-def half_solved(bd):
+def half_solved(bd: board.Board) -> bool:
     for num in range(1, 5):
         target = solved_dict[num]
         if bd.board[target[0]][target[1]] != num:

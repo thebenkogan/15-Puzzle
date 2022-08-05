@@ -1,13 +1,22 @@
 import random
 import copy
 
+Coord = tuple[int, int]
+BoardType = list[list[int]]
+
 
 # Solved board
-solved = [[13, 9, 5, 1], [14, 10, 6, 2], [15, 11, 7, 3], [0, 12, 8, 4]]
+solved: BoardType = [[13, 9, 5, 1], [14, 10, 6, 2], [15, 11, 7, 3], [0, 12, 8, 4]]
 
 
 class Board:
-    def __init__(self, board=copy.deepcopy(solved), hole=(3, 0), path=[], prev=None):
+    def __init__(
+        self,
+        board: BoardType = copy.deepcopy(solved),
+        hole: Coord = (3, 0),
+        path: list[Coord] = [],
+        prev: Coord | None = None,
+    ):
         # Current board in column major 2D list, initialized to 'board'
         self.board = board
 
@@ -34,12 +43,12 @@ class Board:
         return True
 
     ## True if 'pos' is a legal coordinate
-    def __is_valid_square(self, pos):
+    def __is_valid_square(self, pos: Coord) -> bool:
         return pos[0] >= 0 and pos[0] <= 3 and pos[1] >= 0 and pos[1] <= 3
 
     # Returns a list of coordinates surrounding the hole
-    def hole_squares(self):
-        out = [0] * 4
+    def hole_squares(self) -> list[Coord]:
+        out: list[Coord] = [(0, 0)] * 4
         out[0] = (self.hole[0], self.hole[1] + 1)
         out[1] = (self.hole[0], self.hole[1] - 1)
         out[2] = (self.hole[0] + 1, self.hole[1])
@@ -48,7 +57,7 @@ class Board:
 
     # Moves the number at 'pos' to the hole and returns True
     # if legal, False otherwise
-    def move(self, pos):
+    def move(self, pos: Coord) -> bool:
         if pos in self.hole_squares():
             num = self.board[pos[0]][pos[1]]
             self.board[self.hole[0]][self.hole[1]] = num
@@ -59,7 +68,7 @@ class Board:
             return False
 
     # Finds the coordinate of 'num' in the board, None if is not on the board
-    def find_num(self, num):
+    def find_num(self, num: int):
         for i, _ in enumerate(self.board):
             for j, el in enumerate(self.board[i]):
                 if el == num:
@@ -82,7 +91,7 @@ class Board:
 
     # Creates a new board dereferenced from the old board.
     def copy(self):
-        out = []
+        out: BoardType = []
         for col in self.board:
             out.append(list(col))
         return Board(out, self.hole, list(self.path), self.prev)
