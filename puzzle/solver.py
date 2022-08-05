@@ -2,50 +2,26 @@ from . import board
 import heapq as hq
 
 
-# Returns a path specifying the list of input moves to insert the number.
-def insert_next(bd: board.Board) -> list[board.Coord]:
-    frontier: list[tuple[int, board.Board]] = []
-    current: board.Board = bd
-    solved_path: list[board.Coord] = []
-    num = next_insertion(bd)
-
-    while len(solved_path) == 0:
-        next_nums = current.hole_squares()
-        if current.prev != None:
-            next_nums.remove(current.prev)
-        for pos in next_nums:
-            next = current.copy()
-            next.prev = next.hole
-            next.move(pos)
-            next.path.append(pos)
-            f: int = len(next.path) + closeness_one(next, num)
-            hq.heappush(frontier, (f, next))
-
-        best = hq.heappop(frontier)
-
-        if best[1].board == board.solved or order[next_insertion(best[1])] > order[num]:
-            solved_path = best[1].path
-
-        current = best[1]
-
-    return solved_path
-
-
 def solve(bd: board.Board, half: bool = True) -> list[board.Coord]:
-    frontier: list[tuple[int, board.Board]] = []
-    current: board.Board = bd
-    solved_path: list[board.Coord] = []
-
     if half:
         bd = bd.copy()
         path: list[board.Coord] = []
         while not half_solved(bd):
-            res = insert_next(bd)
+            res = search(bd, next_insertion(bd))
             path += res
             for mv in res:
                 bd.move(mv)
         return path + solve(bd, half=False)
 
+    return search(bd, None)
+
+
+# Searches for a path to solve 'num' if provided, solved board otherwise.
+def search(bd: board.Board, num: int | None) -> list[board.Coord]:
+    frontier: list[tuple[int, board.Board]] = []
+    current: board.Board = bd
+    solved_path: list[board.Coord] = []
+
     while len(solved_path) == 0:
         next_nums = current.hole_squares()
         if current.prev != None:
@@ -55,12 +31,20 @@ def solve(bd: board.Board, half: bool = True) -> list[board.Coord]:
             next.prev = next.hole
             next.move(pos)
             next.path.append(pos)
-            f = len(next.path) + closeness_all(next) + linear_conflicts(next)
+            f: int = len(next.path) + (
+                closeness_one(next, num)
+                if num != None
+                else closeness_all(next) + linear_conflicts(next)
+            )
             hq.heappush(frontier, (f, next))
 
         best = hq.heappop(frontier)
 
-        if best[1].board == board.solved:
+        if (
+            num != None
+            and order[next_insertion(best[1])] > order[num]
+            or best[1].board == board.solved
+        ):
             solved_path = best[1].path
 
         current = best[1]
