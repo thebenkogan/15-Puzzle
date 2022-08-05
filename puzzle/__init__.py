@@ -1,1 +1,2 @@
-__all__ = ["board", "solver"]
+from .board import *
+from .solver import *
