@@ -1,8 +1,9 @@
+from typing import Any
 from puzzle import *
 
 # True if 'lst1' and 'lst2' contain the same elements.
 # Both lists must be sortable.
-def equal_sets(lst1, lst2):
+def equal_sets(lst1: list[Any], lst2: list[Any]):
     lst1.sort()
     lst2.sort()
     return lst1 == lst2
